@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.luyun.mapper.VisualMapper">
+
+    <select id="selectErrorsByTimeRange" resultType="com.luyun.vo.ErrorVO">
+        SELECT timestamp_of_dev_out, device_id, device_type, error
+        FROM devices
+        WHERE timestamp_of_dev_out BETWEEN #{startTime} AND #{endTime} AND error=1
+    </select>
+
+    <!-- 在线设备数量统计，按设备类型分组 -->
+    <select id="countOnlineDevicesByType" resultType="com.luyun.vo.DeviceTypeCountVO">
+        SELECT device_type AS deviceType, COUNT(*) AS count
+        FROM devices
+        WHERE timestamp_of_det_out &gt;= #{startTime}
+          AND timestamp_of_det_out &lt; (#{startTime} + #{interval})
+        GROUP BY device_type
+    </select>
+
+    <!-- 检测目标数量统计，按类型分组 -->
+    <select id="countObjectiveByType" resultType="com.luyun.vo.ObjectiveTypeCountVO">
+        SELECT type, COUNT(*) AS count
+        FROM objectives
+        WHERE timestamp_of_dev_out &gt;= #{startTime}
+          AND timestamp_of_dev_out &lt; (#{startTime} + #{interval})
+        GROUP BY type
+    </select>
+
+</mapper>

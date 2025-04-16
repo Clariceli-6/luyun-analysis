@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luyun.mapper.ExportMapper">
+
+    <select id="exportDevice" resultType="com.luyun.vo.ExportDeviceVO">
+        SELECT
+        device_id
+        <if test="isDeviceType == true">
+            , device_type
+        </if>
+        <if test="isTimestampOfDevOut == true">
+            , timestamp_of_dev_out
+        </if>
+        <if test="isTimestampOfDetIn == true">
+            , timestamp_of_det_in
+        </if>
+        <if test="isTimestampOfDetOut == true">
+            , timestamp_of_det_out
+        </if>
+        <if test="isObjectiveNum == true">
+            , objective_num
+        </if>
+        FROM devices
+        <where>
+            <if test="deviceId != null and deviceId != ''">
+                and device_id like concat('%', #{deviceId},'%')
+            </if>
+        </where>
+    </select>
+
+
+    <select id="exportByTime" resultType="com.luyun.vo.ExportTimeVO">
+        SELECT
+        timestamp_of_dev_out
+        <choose>
+            <when test="isDeviceId == true">
+                , device_id
+            </when>
+            <otherwise>
+                , NULL AS device_id
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="isType == true">
+                , type
+            </when>
+            <otherwise>
+                , NULL AS type
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="isLongitude == true">
+                , (longitude * 1e-7) - 180 AS longitude
+            </when>
+            <otherwise>
+                , NULL AS longitude
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="isLatitude == true">
+                , (latitude * 1e-7) - 90 AS latitude
+            </when>
+            <otherwise>
+                , NULL AS latitude
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="isSpeed == true">
+                , speed
+            </when>
+            <otherwise>
+                , NULL AS speed
+            </otherwise>
+        </choose>
+        FROM objectives
+        WHERE timestamp_of_dev_out &gt;= #{startTime}
+        AND timestamp_of_dev_out &lt; #{endTime}
+    </select>
+
+</mapper>

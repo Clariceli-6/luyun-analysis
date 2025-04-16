@@ -1,0 +1,8 @@
+luyun:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: mysql2.sqlpub.com
+    port: 3307
+    database: group5_luyun
+    username: group5
+    password: 6JzQ3rEQu0v4AVEk

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.luyun.mapper.QueryMapper">
+    <select id="queryDevice" resultType="com.luyun.vo.DeviceIdVO">
+        select device_type, timestamp_of_dev_out, timestamp_of_det_in, timestamp_of_det_out, objective_num, device_id
+        from devices
+        <where>
+            <if test="deviceId != null and deviceId != ''">
+                and device_id like concat('%', #{deviceId},'%')
+            </if>
+        </where>
+        order by timestamp_of_dev_out desc
+    </select>
+
+    <select id="queryTime" resultType="com.luyun.vo.TimeVO">
+        SELECT device_id, type, longitude, latitude, speed
+        FROM objectives
+        <where>
+            timestamp_of_dev_out &gt;= #{startTime}
+            AND timestamp_of_dev_out &lt;= #{endTime}
+        </where>
+        ORDER BY device_id desc
+    </select>
+</mapper>
